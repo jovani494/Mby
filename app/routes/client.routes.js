@@ -1,6 +1,6 @@
 const express = require("express");
-const ServiceController = require('../controllers/services')
-const ServiceModel = require('../models/service');
+const ClientController = require('../controllers/client.controller')
+const ClientModel = require('../models/client.model');
 const bodyParser = require('body-parser');
 const app = express();
 
@@ -9,11 +9,10 @@ const multer = require('multer');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/', ServiceController.findAll);
-app.get('/detail/:id', ServiceController.findOne);
-app.post('/create/', ServiceController.create);
-app.put('/update/:id', ServiceController.update);
-app.delete('/delete/:id', ServiceController.destroy);
+app.get('/', ClientController.findAll);
+app.get('/detail/:id', ClientController.findOne);
+app.put('/update/:id', ClientController.update);
+app.delete('/delete/:id', ClientController.destroy);
 
 const DIR = "./app/public/";
 
@@ -53,20 +52,20 @@ app.put("/createimg/:id", upload.single("avatar"), async (req, res, next) => {
     const url = req.protocol + "://" + req.get("host");
     const avatar = url + "/public/" + req.file.filename;
    
-    const updatedService = await ServiceModel.findByIdAndUpdate(
+    const updatedClient = await ClientModel.findByIdAndUpdate(
       req.params.id,
       { avatar: avatar },
       { new: true }
     );
 
-    if (!updatedService) {
-      return res.status(404).json({ message: 'Service non trouvé.' });
+    if (!updatedClient) {
+      return res.status(404).json({ message: 'Client non trouvé.' });
     }
 
-      res.status(200).json({ message: 'Image du service mise à jour avec succès.', updatedService });
+      res.status(200).json({ message: 'Image du client mise à jour avec succès.', updatedClient });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Une erreur est survenue lors de la mise à jour de l\'image du service.' });
+      res.status(500).json({ message: 'Une erreur est survenue lors de la mise à jour de l\'image du client.' });
     }
 });
 

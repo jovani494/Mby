@@ -2,6 +2,8 @@ const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
+const Client = db.client;
+const Employe = db.employe;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
@@ -13,7 +15,7 @@ exports.signup = (req, res) => {
     password: bcrypt.hashSync(req.body.password, 8),
   });
 
-  user.save((err, user) => {
+  user.save((err, savedUser) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
@@ -30,8 +32,8 @@ exports.signup = (req, res) => {
             return;
           }
 
-          user.roles = roles.map((role) => role._id);
-          user.save((err) => {
+          savedUser.roles = roles.map((role) => role._id);
+          savedUser.save((err) => {
             if (err) {
               res.status(500).send({ message: err });
               return;
@@ -48,14 +50,30 @@ exports.signup = (req, res) => {
           return;
         }
 
-        user.roles = [role._id];
-        user.save((err) => {
+        savedUser.roles = [role._id];
+        savedUser.save((err) => {
           if (err) {
             res.status(500).send({ message: err });
             return;
           }
 
-          res.send({ message: "User was registered successfully!" });
+          const client = new Client({
+            Nom: req.body.Nom,
+            Prenom: req.body.Prenom,
+            Gender: req.body.Gender,
+            Phone: req.body.Phone,
+            avatar : "https://ssl.gstatic.com/accounts/ui/avatar_2x.png",
+            User : savedUser._id,
+          })
+
+          client.save((err, savedClient) => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+    
+            res.send({ message: "User and Client were registered successfully!" });
+          });
         });
       });
     }
