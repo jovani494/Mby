@@ -36,11 +36,11 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-
+const cookieSecret = process.env.COOKIE_SECRET || 'default_secret';
 app.use(
   cookieSession({
     name: "bezkoder-session",
-    keys: ["COOKIE_SECRET"], // should use as secret environment variable
+    keys: [cookieSecret], // should use as secret environment variable
     httpOnly: true
   })
 );
@@ -57,7 +57,7 @@ db.mongoose
     initial();
   })
   .catch(err => {
-    console.error("Connection error", err);
+    console.error("Connection error", err); 
     process.exit();
   });
 
