@@ -15,7 +15,7 @@ const app = express();
 
 const corsOptions = {
   origin: ['http://localhost:4200'], // Remplacez par votre domaine autorisé
-  // origin: '*',
+  //origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Méthodes HTTP autorisées
   allowedHeaders: ['Content-Type', 'Authorization'], // En-têtes autorisés
   credentials: true 
@@ -36,16 +36,16 @@ app.use(express.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-const cookieSecret = process.env.COOKIE_SECRET || 'default_secret';
+
 app.use(
   cookieSession({
     name: "bezkoder-session",
-    keys: [cookieSecret], // should use as secret environment variable
+    keys: ["COOKIE_SECRET"], // should use as secret environment variable
     httpOnly: true
   })
 );
 
-const db = require("./app/models");
+const db = require("./app/models"); 
 const Role = db.role;
 db.mongoose
   .connect('mongodb+srv://ravelonarivojovani:MYmeanproject10@jovani0.bcg1atj.mongodb.net/mean?retryWrites=true&w=majority', {
@@ -57,7 +57,7 @@ db.mongoose
     initial();
   })
   .catch(err => {
-    console.error("Connection error", err); 
+    console.error("Connection error", err);
     process.exit();
   });
 
